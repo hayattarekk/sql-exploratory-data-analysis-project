@@ -1,17 +1,14 @@
- SELECT 
- order_date,
- total_sales,
- SUM(total_sales) OVER (ORDER BY order_date) AS running_total_sales,
- AVG(avg_price) OVER (ORDER BY order_date) AS moving_average_price
- FROM
- (SELECT 
-	 DATETRUNC(YEAR, order_date) AS order_date,
-	 SUM(sales_amount) AS total_sales,
-	 AVG(sls_price) AS avg_price 
+SELECT 
+	DATETRUNC(month, order_date) AS order_date,
+	/* YEAR(order_date) AS order_year,
+	MONTH(order_date) AS order_month,*/
+	SUM(sales_amount) AS total_sales,
+	COUNT(DISTINCT customer_key) AS total_customers,
+	SUM(quantity) AS total_quantity
 FROM gold.fact_sales
 WHERE order_date IS NOT NULL
-GROUP BY DATETRUNC(YEAR, order_date)
-) t 
-
-
+GROUP BY DATETRUNC(month, order_date)
+/*YEAR(order_date), MONTH(order_date)*/
+ORDER BY DATETRUNC(month, order_date)
+/*YEAR(order_date), MONTH(order_date)*/
 
