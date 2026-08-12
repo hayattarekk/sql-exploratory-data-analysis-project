@@ -1,14 +1,20 @@
-SELECT 
-	DATETRUNC(month, order_date) AS order_date,
-	/* YEAR(order_date) AS order_year,
-	MONTH(order_date) AS order_month,*/
-	SUM(sales_amount) AS total_sales,
-	COUNT(DISTINCT customer_key) AS total_customers,
-	SUM(quantity) AS total_quantity
-FROM gold.fact_sales
-WHERE order_date IS NOT NULL
-GROUP BY DATETRUNC(month, order_date)
-/*YEAR(order_date), MONTH(order_date)*/
-ORDER BY DATETRUNC(month, order_date)
-/*YEAR(order_date), MONTH(order_date)*/
+-- Which 5 Products generate the highest revenue
+SELECT  TOP 5
+	p.product_name,
+	SUM(f.sales_amount) AS total_revenue
+FROM gold.fact_sales f
+LEFT JOIN gold.dim_products p
+ON p.product_key = f.product_key
+GROUP BY p.product_name
+ORDER BY total_revenue DESC
 
+
+-- What are the 5 worst_performing products in terms of sales?
+SELECT  TOP 5
+	p.product_name,
+	SUM(f.sales_amount) AS total_revenue
+FROM gold.fact_sales f
+LEFT JOIN gold.dim_products p
+ON p.product_key = f.product_key
+GROUP BY p.product_name
+ORDER BY total_revenue 
